@@ -19,13 +19,14 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'disable_openerp_online'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         # 'templates.xml',
-        'templates.xml'
+        'templates.xml',
+        'models_view.xml'
     ],
     'qweb': ['static/src/xml/marcos_branding.xml'],
     'demo': [

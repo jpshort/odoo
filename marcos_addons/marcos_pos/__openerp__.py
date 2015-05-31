@@ -37,7 +37,7 @@ This module add new features to the POS
     # always loaded
     'data': [
         'security/pos_discount_security.xml',
-        'security/ir.model.access.csv',
+        # 'security/ir.model.access.csv',
         'templates.xml',
         'wizard/marcos_pos_wizard.xml',
         'point_of_sale/point_of_sale_view.xml',

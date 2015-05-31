@@ -474,7 +474,7 @@ openerp.marcos_ipf = function (instance, local) {
         },
         get_book: function(url, serial, bookday, context){
             var self = this;
-            openerp.web.blockUI()
+            openerp.web.blockUI();
             $.ajax({
                 url: url,
                 type: "GET",
@@ -483,6 +483,7 @@ openerp.marcos_ipf = function (instance, local) {
                 self.save_book(response, serial, bookday, context);
                 
             }).fail(function(response){
+                openerp.web.unblockUI()
                 console.log(response);
                     var res = false;
 
@@ -512,6 +513,7 @@ openerp.marcos_ipf = function (instance, local) {
                         openerp.web.unblockUI()
                     });
             } else {
+                openerp.web.unblockUI()
                 self.showDialog("Extraccion libro diario", "No hay datos disponibles para esta fecha.");
             }
         },

@@ -19,24 +19,3 @@
 #
 ##############################################################################
 
-from openerp.osv import osv,fields
-from openerp.tools.translate import _
-from openerp.tools.amount_to_text_en import amount_to_text
-from lxml import etree
-
-
-class account_voucher(osv.osv):
-    _inherit = 'account.voucher'
-
-    def print_voucher(self, cr, uid, ids, context=None):
-        if not ids:
-            raise osv.except_osv(_('Printing error'), _('No a seleccionado nigun recibo para imprimir '))
-
-        data = {
-            'id': ids and ids[0],
-            'ids': ids,
-        }
-
-        return self.pool['report'].get_action(
-            cr, uid, [], 'marcos_report.report_voucher', data=data, context=context
-        )

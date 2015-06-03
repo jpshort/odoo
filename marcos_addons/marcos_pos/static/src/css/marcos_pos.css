@@ -19350,3 +19350,45 @@ body > div.openerp.openerp_webclient_container > table > tbody > tr > td > div >
 .pos .order .orderline .qty-info.not-available{
 	color:red;
 }
+
+
+/*pos ticket*/
+
+
+.pos .pos-sale-ticket .company-info{
+
+    font-size: 13px;
+}
+
+.pos .pos-sale-ticket .tg {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-color: #ccc;
+}
+
+.pos .pos-sale-ticket .tg td {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    /*padding: 10px 5px;*/
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    word-break: normal;
+    border-color: #ccc;
+    color: #333;
+    background-color: #fff;
+}
+
+.pos .pos-sale-ticket .tg th {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    padding: 10px 5px;
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    word-break: normal;
+    border-color: #ccc;
+    color: #333;
+    background-color: #f0f0f0;
+}

@@ -48,7 +48,7 @@
                 <field name="fiscal_position" position="attributes">
                     <attribute name="widget">selection</attribute>
                     <attribute name="domain">[('for_supplier','=',False)]</attribute>
-                    <attribute name="readonly">True</attribute>
+                    <attribute name="readonly">False</attribute>
                 </field>
 
                 <field name="journal_id" position="replace">

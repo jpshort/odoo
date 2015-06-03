@@ -44,11 +44,8 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'report/layouts.xml',
-        'report/report_invoice_document.xml',
-        'report/voucher_report.xml',
         'data/report_paperformat.xml',
-        'view/account_voucher_view.xml'
+        'report/invoice.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

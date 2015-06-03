@@ -750,6 +750,15 @@ class pos_order(osv.Model):
 
         return super(pos_order, self).copy(cr, uid, id, default=default, context=context)
 
+    def get_ncf_info(self, cr, uid, pos_reference, context={}):
+        print pos_reference
+        res = {}
+        order_id = self.pool.get("pos.order").search(cr, uid, [("pos_reference", "like", pos_reference)])
+        order = self.browse(cr, uid, order_id)
+        if order:
+            res = {"ncf_type": order.invoice_id.journal_id.name, "ncf": order.invoice_id.number}
+        return res
+
 
 class pos_order_line(osv.Model):
     _inherit = "pos.order.line"

@@ -35,6 +35,18 @@ class stock_move(models.Model):
         return res
 
 
+    def product_price_update_after_done(self, cr, uid, ids, context=None):
+        '''
+        This method adapts the price on the product when necessary
+        '''
+        for move in self.browse(cr, uid, ids, context=context):
+            #adapt standard price on outgoing moves if the product cost_method is 'real', so that a return
+            #or an inventory loss is made using the last value used for an outgoing valuation.
+            if move.product_id.cost_method == 'real':
+                #store the average price of the move on the move and product form
+                self._store_average_cost_price(cr, uid, move, context=context)
+
+
 class stock_picking(models.Model):
     _inherit = "stock.picking"
 

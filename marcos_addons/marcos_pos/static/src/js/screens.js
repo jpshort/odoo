@@ -1,6 +1,7 @@
 function marcos_pos_screens(instance, module) {
 
-    var _t = instance.web._t;
+    var QWeb = instance.web.qweb,
+    _t = instance.web._t;
 
     module.PaymentScreenWidget = module.PaymentScreenWidget.extend({
         show: function() {
@@ -209,8 +210,9 @@ function marcos_pos_screens(instance, module) {
 
                 } else if (!self.pos.config.payment_pos) {
                     //finish order and go back to scan screen
+                    currentOrder.set("next_screen", true);
                     this.pos.push_order(currentOrder);
-                    self.pos_widget.screen_selector.set_current_screen(this.next_screen);
+                    //self.pos_widget.screen_selector.set_current_screen(this.next_screen);
                 } else {
                     this.pos.push_order(currentOrder);
                     self.pos.get('selectedOrder').destroy();    //finish order and go back to scan screen
@@ -359,6 +361,20 @@ function marcos_pos_screens(instance, module) {
                 this.pos.pricelist_engine.update_products_ui(partner);
                 this.pos.pricelist_engine.update_ticket(partner, orderLines);
             }
+        }
+    });
+
+    module.ReceiptScreenWidget = module.ReceiptScreenWidget.extend({
+       refresh: function() {
+            var order = this.pos.get('selectedOrder');
+            console.log("======================")
+            console.log(order);
+            $('.pos-receipt-container', this.$el).html(QWeb.render('PosTicket',{
+                    widget:this,
+                    order: order,
+                    orderlines: order.get('orderLines').models,
+                    paymentlines: order.get('paymentLines').models,
+                }));
         }
     });
 

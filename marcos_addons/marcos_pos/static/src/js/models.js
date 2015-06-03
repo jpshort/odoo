@@ -106,6 +106,63 @@ function marcos_pos_models(instance, module) {
 
             return invoiced;
         },
+        // send an array of orders to the server
+        // available options:
+        // - timeout: timeout for the rpc call in ms
+        // returns a deferred that resolves with the list of
+        // server generated ids for the sent orders
+        _save_to_server: function (orders, options) {
+            if (!orders || !orders.length) {
+                var result = $.Deferred();
+                result.resolve([]);
+                return result;
+            }
+
+            options = options || {};
+
+            var self = this;
+            var timeout = typeof options.timeout === 'number' ? options.timeout : 7500 * orders.length;
+
+            // we try to send the order. shadow prevents a spinner if it takes too long. (unless we are sending an invoice,
+            // then we want to notify the user that we are waiting on something )
+            var posOrderModel = new instance.web.Model('pos.order');
+            return posOrderModel.call('create_from_ui',
+                [_.map(orders, function (order) {
+                    order.to_invoice = options.to_invoice || false;
+                    return order;
+                })],
+                undefined,
+                {
+                    shadow: !options.to_invoice,
+                    timeout: timeout
+                }
+            ).then(function (server_ids) {
+                var currentOrder = self.get('selectedOrder');
+                new instance.web.Model("pos.order").call("get_ncf_info", [currentOrder.uid], undefined).then(function(result){
+                    currentOrder.set("ncf_type", result.ncf_type);
+                    currentOrder.set("ncf", result.ncf);
+                    self.pos_widget.screen_selector.set_current_screen("receipt");
+                });
+
+                _.each(orders, function (order) {
+                    self.db.remove_order(order.id);
+                });
+
+                return server_ids;
+            }).fail(function (error, event){
+                if(error.code === 200 ){    // Business Logic Error, not a connection problem
+                    self.pos_widget.screen_selector.show_popup('error-traceback',{
+                        message: error.data.message,
+                        comment: error.data.debug
+                    });
+                }
+                // prevent an error popup creation by the rpc failure
+                // we want the failure to be silent as we send the orders in the background
+                event.preventDefault();
+                console.error('Failed to send orders:', orders);
+                self.pos_widget.screen_selector.set_current_screen("receipt");
+            });
+        },
         validate_user: function (value) {
             var self = this;
             var fast_login = false;
@@ -179,7 +236,8 @@ function marcos_pos_models(instance, module) {
 
             }, {
                 model: 'res.company',
-                fields: ['currency_id', 'email', 'website', 'company_registry', 'vat', 'name', 'phone', 'partner_id', 'country_id'],
+                fields: ['currency_id', 'email', 'website', 'company_registry', 'vat',
+                    'name', 'phone', 'fax', 'partner_id', 'country_id', 'city', 'state_id', 'street', 'street2'],
                 ids: function (self) {
                     return [self.user.company_id[0]]
                 },
@@ -541,9 +599,9 @@ function marcos_pos_models(instance, module) {
         },
         addPaymentline: function(cashregister) {
 
-            if (this.get_remaining() === 0) {
-                return
-            }
+            //if (this.get_remaining() === 0) {
+            //    return
+            //}
             var paymentLines = this.get('paymentLines');
             var newPaymentline = new module.Paymentline({},{cashregister:cashregister, pos:this.pos});
             if(cashregister.journal.type !== 'cash'){
